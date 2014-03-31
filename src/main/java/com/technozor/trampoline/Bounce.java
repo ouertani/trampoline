@@ -17,9 +17,9 @@ public interface Bounce<A> {
     public Boolean isDone();
     public static <A> A trampoline(Bounce<A> bounce) {
         if (bounce.isDone()) 
-            return((Done<A>) bounce).getResult();
+            return((Done<A>) bounce).thunk();
         else
-           return trampoline(((Call<A>) bounce).getResult());
+           return trampoline(((Call<A>) bounce).thunk());
     }
     
     class Done<A> implements Bounce<A> {
@@ -27,7 +27,7 @@ public interface Bounce<A> {
        public Done(A result) {
            this.result = result;
        }
-       public A getResult() {return result; }
+       public A thunk() {return result; }
        
        @Override
        public Boolean isDone(){return true ; }
@@ -38,7 +38,7 @@ public interface Bounce<A> {
        public Call(Supplier<Bounce<A>> thunk) {
            this.thunk =thunk;
        }
-       public Bounce<A> getResult() { return thunk.get(); }
+       public Bounce<A> thunk() { return thunk.get(); }
        @Override
        public Boolean isDone() { return false ; }
    }

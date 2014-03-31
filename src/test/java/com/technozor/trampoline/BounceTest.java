@@ -2,6 +2,7 @@
 package com.technozor.trampoline;
 
 import static com.technozor.trampoline.Bounce.*;
+import java.math.BigInteger;
 import java.util.function.BinaryOperator;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -43,34 +44,33 @@ public class BounceTest {
         else return n * regFactoriel (n - 1);
     }
     
-    private long tailRecFact(long n ) {
-     final BinaryOperator<Long> go  = (t , acc) -> {
-         if (t < 2) return acc ;
-         else return go.apply(t-1,acc *t) ;
-     };
-             return go.apply(n,1L);
+    private BigInteger tailRecFact(long n ) {
+             return go(BigInteger.valueOf(n),BigInteger.ONE);
+    }
+    private BigInteger safeFactoriel(long n) {
+        return (trampoline(safeGo(BigInteger.valueOf(n),BigInteger.ONE)));
     }
     
-    
-    private Bounce<Long> tramFactoriel(long n) {
-        if (n < 2) return Done(1L) ;
-        else return Call( () -> {
-            return Done(n * trampoline(tramFactoriel(n -1)));
-        });
+    private BigInteger go(BigInteger n, BigInteger acc) {
+        if (n.intValue() < 2) return acc;
+        else return go(n.subtract(BigInteger.ONE), acc.multiply(n));
     }
-    /**
-     * Test of asDone method, of class Bounce.
-     */
+    
+    private Bounce<BigInteger> safeGo(BigInteger n, BigInteger acc) {
+        if( n.intValue() < 2) return Done(acc) ;
+        else return Call( () -> safeGo(n.subtract(BigInteger.ONE) , acc.multiply(n)));
+    }
+  
     @Test(expected=StackOverflowError.class)
     public void testStackOverFlow() {
-        regFactoriel(10000);
+        regFactoriel(99900);
     }
     
     @Test
     public void testNoStackOverFlow() {
-        Bounce<Long> bounce = tramFactoriel(10000);
-        Long calculated = trampoline(bounce);
-        Long expected = 10000000L;
+       
+        BigInteger calculated = safeFactoriel(99900);
+        BigInteger expected = BigInteger.valueOf(6);
         
         assertEquals(expected, calculated );
     }
