@@ -1,4 +1,3 @@
-
 package com.technozor.trampoline;
 
 import java.util.function.Supplier;
@@ -18,16 +17,16 @@ public interface Bounce<A> {
         return new Call(thunk);
     }
 
-    public default boolean hasNext() {
-        return true;
-    }
-
     public static <A> A trampoline(final Bounce<A> bounce) {
         Bounce _bounce = bounce;
         while (_bounce.hasNext())
             _bounce = ((Call<A>) _bounce).thunk();
 
         return ((Done<A>) _bounce).thunk();
+    }
+
+    public default boolean hasNext() {
+        return true;
     }
 
     class Done<A> implements Bounce<A> {
