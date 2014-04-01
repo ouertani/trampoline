@@ -49,6 +49,11 @@ public class BounceTest {
     public void testStackOverFlow() {
         regFactoriel(99900);
     }
+
+    @Test(expected=StackOverflowError.class)
+    public void regularFactoriel() {
+        tailRecFact(99900) ;
+    }
     
     @Test()
     public void testNoStackOverFlow() {
