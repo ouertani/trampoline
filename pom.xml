@@ -37,12 +37,7 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.googlecode.catch-exception</groupId>
-            <artifactId>catch-throwable</artifactId>
-            <version>1.2.0</version>
-            <scope>test</scope>
-        </dependency>
+
     </dependencies>
     <developers>
         <developer>

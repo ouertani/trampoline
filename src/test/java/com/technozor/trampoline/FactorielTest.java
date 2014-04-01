@@ -1,6 +1,4 @@
-
 package com.technozor.trampoline;
-
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,19 +6,20 @@ import org.junit.runners.JUnit4;
 
 import java.math.BigInteger;
 
-import static com.technozor.trampoline.Bounce.*;
+import static com.technozor.trampoline.Bounce.Call;
+import static com.technozor.trampoline.Bounce.Done;
+import static com.technozor.trampoline.Bounce.trampoline;
 import static org.junit.Assert.assertTrue;
 
 /**
  * @author ouertani
  */
 @RunWith(JUnit4.class)
-public class BounceTest {
+public class FactorielTest {
 
-
-    private long regFactoriel(int n) {
+    private long regularFactoriel(int n) {
         if (n < 2) return 1;
-        else return n * regFactoriel(n - 1);
+        else return n * regularFactoriel(n - 1);
     }
 
     private BigInteger tailRecFact(int n) {
@@ -44,7 +43,7 @@ public class BounceTest {
 
     @Test(expected = StackOverflowError.class)
     public void testStackOverFlow() {
-        regFactoriel(99900);
+        regularFactoriel(99900);
     }
 
     @Test(expected = StackOverflowError.class)
@@ -59,7 +58,4 @@ public class BounceTest {
 
         assertTrue(safeFactoriel instanceof BigInteger);
     }
-
-
-
 }
