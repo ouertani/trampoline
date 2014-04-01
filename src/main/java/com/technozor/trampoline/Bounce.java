@@ -15,11 +15,12 @@ public interface Bounce<A> {
     public static  <A> Call<A> Call(Supplier<Bounce<A>> thunk) { return new Call(thunk); }
     
     public Boolean isDone();
-    public static <A> A trampoline(Bounce<A> bounce) {
-        if (bounce.isDone()) 
-            return((Done<A>) bounce).thunk();
-        else
-           return trampoline(((Call<A>) bounce).thunk());
+    public static <A> A trampoline(final Bounce<A> bounce) {
+        Bounce _bounce = bounce;
+        while(!_bounce.isDone())
+           _bounce = ((Call<A>) _bounce).thunk();
+
+            return((Done<A>) _bounce).thunk();
     }
     
     class Done<A> implements Bounce<A> {

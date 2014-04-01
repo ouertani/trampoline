@@ -1,15 +1,16 @@
 
 package com.technozor.trampoline;
 
+import static com.googlecode.catchexception.throwable.CatchThrowable.catchThrowable;
+import static com.googlecode.catchexception.throwable.CatchThrowable.caughtThrowable;
 import static com.technozor.trampoline.Bounce.*;
 import java.math.BigInteger;
-import java.util.function.BinaryOperator;
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import static org.junit.Assert.assertFalse;
+
+
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ErrorCollector;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -20,34 +21,17 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class BounceTest {
     
-    public BounceTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
 
-    private long regFactoriel(long n) {
+
+    private long regFactoriel(int n) {
         if (n < 2) return 1;
         else return n * regFactoriel (n - 1);
     }
     
-    private BigInteger tailRecFact(long n ) {
+    private BigInteger tailRecFact(int n ) {
              return go(BigInteger.valueOf(n),BigInteger.ONE);
     }
-    private BigInteger safeFactoriel(long n) {
+    private BigInteger safeFactoriel(int n) {
         return (trampoline(safeGo(BigInteger.valueOf(n),BigInteger.ONE)));
     }
     
@@ -66,14 +50,15 @@ public class BounceTest {
         regFactoriel(99900);
     }
     
-    @Test
+    @Test()
     public void testNoStackOverFlow() {
        
-        BigInteger calculated = safeFactoriel(99900);
-        BigInteger expected = BigInteger.valueOf(6);
-        
-        assertEquals(expected, calculated );
+         catchThrowable(safeFactoriel(99900));
+         assertFalse (caughtThrowable() instanceof StackOverflowError) ;
     }
+
+    @Rule
+    public ErrorCollector collector = new ErrorCollector();
 
     
     
