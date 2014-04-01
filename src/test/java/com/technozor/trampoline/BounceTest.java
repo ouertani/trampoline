@@ -1,18 +1,14 @@
 
 package com.technozor.trampoline;
 
-import org.junit.Rule;
+
 import org.junit.Test;
-import org.junit.rules.ErrorCollector;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.math.BigInteger;
 
-import static com.googlecode.catchexception.throwable.CatchThrowable.catchThrowable;
-import static com.googlecode.catchexception.throwable.CatchThrowable.caughtThrowable;
 import static com.technozor.trampoline.Bounce.*;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -28,21 +24,22 @@ public class BounceTest {
     }
 
     private BigInteger tailRecFact(int n) {
-        return go(BigInteger.valueOf(n), BigInteger.ONE);
+        return go(n, BigInteger.ONE);
+    }
+
+
+
+    private BigInteger go(int n, BigInteger acc) {
+        if (n < 2) return acc;
+        else return go(n - 1 , acc.multiply(BigInteger.valueOf(n)));
     }
 
     private BigInteger safeFactoriel(int n) {
-        return (trampoline(safeGo(BigInteger.valueOf(n), BigInteger.ONE)));
+        return trampoline(safeGo(n, BigInteger.ONE));
     }
-
-    private BigInteger go(BigInteger n, BigInteger acc) {
-        if (n.intValue() < 2) return acc;
-        else return go(n.subtract(BigInteger.ONE), acc.multiply(n));
-    }
-
-    private Bounce<BigInteger> safeGo(BigInteger n, BigInteger acc) {
-        if (n.intValue() < 2) return Done(acc);
-        else return Call(() -> safeGo(n.subtract(BigInteger.ONE), acc.multiply(n)));
+    private Bounce<BigInteger> safeGo(int n, BigInteger acc) {
+        if (n < 2) return Done(acc);
+        else return Call(() -> safeGo(n - 1 , acc.multiply(BigInteger.valueOf(n))));
     }
 
     @Test(expected = StackOverflowError.class)
