@@ -37,7 +37,7 @@ public class FactorialTest {
 
 
     @Test(expected = StackOverflowError.class)
-    public void regularFactoriel() {
+    public void regularFactorial() {
         tailRecFact(99900);
     }
 
