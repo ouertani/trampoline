@@ -13,16 +13,16 @@ import static org.junit.Assert.assertTrue;
  * @author ouertani
  */
 @RunWith(JUnit4.class)
-public class FactorielTest {
+public class FactorialTest {
 
-    private long regularFactoriel(int n) {
+    private long regularFactorial(int n) {
         if (n < 2) return 1;
-        else return n * regularFactoriel(n - 1);
+        else return n * regularFactorial(n - 1);
     }
 
     @Test(expected = StackOverflowError.class)
     public void testStackOverFlow() {
-        regularFactoriel(99900);
+        regularFactorial(99900);
     }
 
     private BigInteger tailRecFact(int n) {
@@ -42,7 +42,7 @@ public class FactorielTest {
     }
 
 
-    private BigInteger safeFactoriel(int n) {
+    private BigInteger safeFactorial(int n) {
         return trampoline(safeGo(n, BigInteger.ONE));
     }
 
@@ -55,8 +55,8 @@ public class FactorielTest {
     @Test()
     public void testNoStackOverFlow() {
 
-        BigInteger safeFactoriel = safeFactoriel(99900);
+        BigInteger safe = safeFactorial(99900);
 
-        assertTrue(safeFactoriel instanceof BigInteger);
+        assertTrue(safe instanceof BigInteger);
     }
 }
