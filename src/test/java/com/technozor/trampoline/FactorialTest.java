@@ -1,5 +1,6 @@
 package com.technozor.trampoline;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -50,7 +51,6 @@ public class FactorialTest {
         if (n < 2) return Done(acc);
         else return Call(() -> safeGo(n - 1, acc.multiply(BigInteger.valueOf(n))));
     }
-
 
     @Test()
     public void testNoStackOverFlow() {

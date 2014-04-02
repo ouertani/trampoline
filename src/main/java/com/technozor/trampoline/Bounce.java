@@ -6,19 +6,19 @@ import java.util.function.Supplier;
  * @param <A>
  * @author ouertani
  */
-public interface Bounce<A> {
+public interface Bounce<E> {
 
 
-    public static <A> Done<A> Done(A result) {
-        return new Done(result);
+    public static <A> Bounce<A> Done(A thunk) {
+        return   new Done(thunk);
     }
 
-    public static <A> Call<A> Call(Supplier<Bounce<A>> thunk) {
+    public static <A> Bounce<A> Call(Supplier<Bounce<A>> thunk) {
         return new Call(thunk);
     }
 
     public static <A> A trampoline(final Bounce<A> bounce) {
-        Bounce _bounce = bounce;
+        Bounce<A> _bounce = bounce;
         while (_bounce.hasNext())
             _bounce = ((Call<A>) _bounce).thunk();
 
@@ -30,14 +30,14 @@ public interface Bounce<A> {
     }
 
     class Done<A> implements Bounce<A> {
-        private final A result;
+        private final A thunk;
 
-        public Done(A result) {
-            this.result = result;
+        private Done(A thunk) {
+            this.thunk = thunk;
         }
 
         public A thunk() {
-            return result;
+            return thunk;
         }
 
         @Override
@@ -49,7 +49,7 @@ public interface Bounce<A> {
     class Call<A> implements Bounce<A> {
         private final Supplier<Bounce<A>> thunk;
 
-        public Call(Supplier<Bounce<A>> thunk) {
+        private Call(Supplier<Bounce<A>> thunk) {
             this.thunk = thunk;
         }
 
