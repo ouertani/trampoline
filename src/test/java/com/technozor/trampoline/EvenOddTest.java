@@ -14,6 +14,8 @@ import static org.junit.Assert.assertTrue;
 @RunWith(JUnit4.class)
 public class EvenOddTest {
 
+    private final int N = 99900;
+
     public boolean isOdd(long n) {
         if (n == 0) return false;
         else return isEven(n - 1);
@@ -27,7 +29,7 @@ public class EvenOddTest {
 
     @Test(expected = StackOverflowError.class)
     public void testStackOverFlow() {
-        isEven(99900);
+        isEven(N);
     }
 
 
@@ -44,11 +46,11 @@ public class EvenOddTest {
     @Test()
     public void testNoStackOverFlow() {
 
-        boolean isEven = trampoline(safeEven(99900));
+        boolean isEven = trampoline(safeEven(N));
 
         assertTrue(isEven);
 
-        boolean isOdd = trampoline(safeEven(99901));
+        boolean isOdd = trampoline(safeEven(N+1));
 
         assertFalse(isOdd);
     }

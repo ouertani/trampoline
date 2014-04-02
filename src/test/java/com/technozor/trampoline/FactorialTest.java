@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(JUnit4.class)
 public class FactorialTest {
+    private final int N = 99900;
 
     private long regularFactorial(int n) {
         if (n < 2) return 1;
@@ -22,14 +23,9 @@ public class FactorialTest {
     }
 
     @Test(expected = StackOverflowError.class)
-    public void testStackOverFlow() {
-        regularFactorial(99900);
+    public void testRegularFactorialStackOverFlow() {
+        regularFactorial(N);
     }
-
-    private BigInteger tailRecFact(int n) {
-        return go(n, BigInteger.ONE);
-    }
-
 
     private BigInteger go(int n, BigInteger acc) {
         if (n < 2) return acc;
@@ -39,13 +35,9 @@ public class FactorialTest {
 
     @Test(expected = StackOverflowError.class)
     public void regularFactorial() {
-        tailRecFact(99900);
+        go(N, BigInteger.ONE);
     }
 
-
-    private BigInteger safeFactorial(int n) {
-        return trampoline(safeGo(n, BigInteger.ONE));
-    }
 
     private Bounce<BigInteger> safeGo(int n, BigInteger acc) {
         if (n < 2) return Done(acc);
@@ -55,7 +47,7 @@ public class FactorialTest {
     @Test()
     public void testNoStackOverFlow() {
 
-        BigInteger safe = safeFactorial(99900);
+        BigInteger safe =  trampoline(safeGo(N, BigInteger.ONE));
 
         assertTrue(safe instanceof BigInteger);
     }
