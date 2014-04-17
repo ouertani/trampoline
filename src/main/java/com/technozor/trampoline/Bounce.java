@@ -1,13 +1,17 @@
 package com.technozor.trampoline;
 
+import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * @param <A>
  * @author ouertani
  */
+@FunctionalInterface
 public interface Bounce<E> {
 
+    public Bounce<E> next();
 
     public static <A> Bounce<A> Done(A thunk) {
         return   new Done(thunk);
@@ -18,15 +22,14 @@ public interface Bounce<E> {
     }
 
     public static <A> A trampoline(final Bounce<A> bounce) {
-        Bounce<A> _bounce = bounce;
-        while (_bounce.hasNext())
-            _bounce = ((Call<A>) _bounce).thunk();
-
-        return ((Done<A>) _bounce).thunk();
+        return Stream.iterate(bounce, Bounce::next)
+                .filter(Bounce::terminated)
+                .findFirst().map(x -> (Done<A>)x)
+                .get().thunk;
     }
 
-    public default boolean hasNext() {
-        return true;
+    public default boolean terminated() {
+        return false;
     }
 
     class Done<A> implements Bounce<A> {
@@ -36,14 +39,12 @@ public interface Bounce<E> {
             this.thunk = thunk;
         }
 
-        public A thunk() {
-            return thunk;
+        @Override
+        public boolean terminated() {
+            return true;
         }
 
-        @Override
-        public boolean hasNext() {
-            return false;
-        }
+        public Bounce<A> next() { throw new Error("Don't call"); }
     }
 
     class Call<A> implements Bounce<A> {
@@ -53,7 +54,7 @@ public interface Bounce<E> {
             this.thunk = thunk;
         }
 
-        public Bounce<A> thunk() {
+        public Bounce<A> next() {
             return thunk.get();
         }
     }

@@ -1,11 +1,11 @@
 package com.technozor.trampoline;
 
-import org.junit.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
 import java.math.BigInteger;
+
 
 import static com.technozor.trampoline.Bounce.*;
 import static org.junit.Assert.assertTrue;
@@ -38,7 +38,6 @@ public class FactorialTest {
         go(N, BigInteger.ONE);
     }
 
-
     private Bounce<BigInteger> safeGo(int n, BigInteger acc) {
         if (n < 2) return Done(acc);
         else return Call(() -> safeGo(n - 1, acc.multiply(BigInteger.valueOf(n))));
@@ -46,9 +45,9 @@ public class FactorialTest {
 
     @Test()
     public void testNoStackOverFlow() {
-
         BigInteger safe =  trampoline(safeGo(N, BigInteger.ONE));
 
         assertTrue(safe instanceof BigInteger);
     }
+
 }
